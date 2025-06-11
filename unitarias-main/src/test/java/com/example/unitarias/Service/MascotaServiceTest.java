@@ -67,7 +67,7 @@ class MascotaServiceTest {
     }
 
     @Test
-    void testObtenerMascotaPorId_CasoExitoso() {
+    void testObtenerMascotaxId() {
         // 1. Preparación (Arrange)
         Long idExistente = 1L;
         Mascota mascotaSimulada = new Mascota(idExistente, "Rex", "Perro", 5);
