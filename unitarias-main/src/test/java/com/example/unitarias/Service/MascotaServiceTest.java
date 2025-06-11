@@ -51,4 +51,44 @@ class MascotaServiceTest {
         assertThat(resultado).hasSize(2).contains(m1, m2);
         verify(mascotaRepository).findAll();
     }
+
+    @Test
+    void testEliminarMascota() {
+        Long idMascota = 1L;
+        
+        // Configurar el mock para que no haga nada cuando se llame a deleteById
+        doNothing().when(mascotaRepository).deleteById(idMascota);
+        
+        // Ejecutar el método a probar
+        mascotaService.eliminarMascota(idMascota);
+        
+        // Verificar que se llamó al método del repositorio con el ID correcto
+        verify(mascotaRepository).deleteById(idMascota);
+    }
+
+    @Test
+    void testObtenerMascotaPorId_CasoExitoso() {
+        // 1. Preparación (Arrange)
+        Long idExistente = 1L;
+        Mascota mascotaSimulada = new Mascota(idExistente, "Rex", "Perro", 5);
+        
+        // Configurar el mock para devolver un Optional con la mascota
+        when(mascotaRepository.findById(idExistente))
+            .thenReturn(Optional.of(mascotaSimulada)); // ✅ Devuelve Optional<Mascota>
+    
+        // 2. Ejecución (Act)
+        Optional<Mascota> resultado = mascotaService.obtenerMascotaPorId(idExistente); // ✅ Recibe Optional
+    
+        // 3. Verificación (Assert)
+        assertThat(resultado)
+            .isPresent() // Verifica que el Optional no está vacío
+            .hasValueSatisfying(mascota -> {
+                assertThat(mascota.getId()).isEqualTo(idExistente);
+                assertThat(mascota.getNombre()).isEqualTo("Rex");
+                assertThat(mascota.getTipo()).isEqualTo("Perro");
+                assertThat(mascota.getEdad()).isEqualTo(5);
+            });
+    
+        verify(mascotaRepository).findById(idExistente);
+    }
 }
